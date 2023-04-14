@@ -2,7 +2,6 @@ package org.rex;
 
 import org.rex.db.DataBaseConnector;
 import org.rex.thread.Operation;
-import org.rex.thread.Subtractor;
 import org.rex.thread.TypeOperation;
 
 /**
@@ -18,14 +17,17 @@ public class App
         DataBaseConnector anotherConnector = new DataBaseConnector();
         connector.initialize();
         anotherConnector.initialize();
-        Operation increase = new Operation(TypeOperation.INCREASE, connector.getConnection());
-        Operation subtract = new Operation(TypeOperation.SUBTRACT, anotherConnector.getConnection());
+        boolean lockAndUnlockTables = false;
+        Operation increase = new Operation(TypeOperation.INCREASE, connector.getConnection(), lockAndUnlockTables);
+        Operation subtract = new Operation(TypeOperation.SUBTRACT, anotherConnector.getConnection(), lockAndUnlockTables);
 
         //Setting data
-        increase.setParameters(10,10,0.5,0);
+        increase.setParameters(10,24,2,0);
+        subtract.setParameters(2,24,4);
 
         //Applying changes and showing information
         increase.start();
+        subtract.start();
 
         //Closing database connection
         //connector.close();
